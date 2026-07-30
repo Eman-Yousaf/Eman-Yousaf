@@ -1,11 +1,24 @@
-### Hi, I'm Eman — I build AI agents that actually do things.
+### 👋 Hi there, I'm Eman — I build AI agents that actually do things.
+
+![Profile views](https://komarev.com/ghpvc/?username=Eman-Yousaf&color=0A66C2&style=flat)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-eman--yousaf96-0A66C2?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/eman-yousaf96)
+[![Gmail](https://img.shields.io/badge/Gmail-alluriousme%40gmail.com-D14836?logo=gmail&logoColor=white)](mailto:alluriousme@gmail.com)
 
 BS AI student focused on agentic systems: LLM agents that reason over real tools, real data, and real consequences — not just chat completions with a system prompt.
 
 - 🔭 Currently building **agentic AI systems** with LangGraph and MCP — agents that choose their own investigation/action path instead of following a fixed script
 - 🛠️ Also comfortable lower in the stack: C++, databases, networking, OOP
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-eman--yousaf96-0A66C2?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/eman-yousaf96)
+### 🧰 Tech Stack
+
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![C++](https://img.shields.io/badge/C%2B%2B-00599C?style=for-the-badge&logo=cplusplus&logoColor=white)
+![LangChain](https://img.shields.io/badge/LangGraph-1C3C3C?style=for-the-badge&logo=langchain&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+![FastAPI](https://img.shields.io/badge/REST%20API-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
+![Jupyter](https://img.shields.io/badge/Jupyter-F37626?style=for-the-badge&logo=jupyter&logoColor=white)
+![Obsidian](https://img.shields.io/badge/Obsidian-7C3AED?style=for-the-badge&logo=obsidian&logoColor=white)
 
 ---
 
@@ -20,9 +33,7 @@ BS AI student focused on agentic systems: LLM agents that reason over real tools
 
 ---
 
-### Stack
-
-`Python` `C++` `LangGraph` `MCP` `LLM Agents` `SQL` `REST APIs`
+### 📊 GitHub Stats
 
 <img src="https://github-readme-stats.vercel.app/api?username=Eman-Yousaf&show_icons=true&theme=default&hide_border=true&count_private=true" height="165" alt="GitHub stats" />
 <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Eman-Yousaf&layout=compact&theme=default&hide_border=true" height="165" alt="Top languages" />
