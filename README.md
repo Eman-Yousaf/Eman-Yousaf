@@ -1,73 +1,75 @@
-I build agents that take real actions against real systems, which mostly means
-deciding what an agent must not be able to do and then enforcing it somewhere the
-model cannot reach.
+The check that decides whether a language model gets to sign something:
 
-### [signed-email-agent](https://github.com/Eman-Yousaf/signed-email-agent)
+```python
+def sign_and_respond(self, to_agent, message_to_sign, response_body, subject="Signed Message"):
+    ok, reason = self._authorize(to_agent, message_to_sign)
+    if not ok:
+        self.log.warning(f"BLOCKED sign attempt for {to_agent} | reason={reason} ...")
+        ...  # reply saying we won't sign it
+        return {"success": False, "error": "not authorized - refused"}
+    return super().sign_and_respond(to_agent, message_to_sign, response_body, subject)
+```
 
-An autonomous agent for a 4-player adversarial benchmark where LLM agents negotiate
-over email and exchange RSA-PSS signed messages. Each agent may sign only for certain
-others, and the opponents are LLMs writing persuasive email directly into your agent's
-context to talk it into signing anyway.
+They exist because of a specific failure. In an adversarial benchmark where four LLM
+agents negotiate over email and exchange RSA-PSS signed messages, the model was never
+given the authorization list — so when an opponent wrote a convincing enough request,
+the LLM fallback signed for an agent the deterministic path had declined *in the same
+round*. Checking at each call site would have meant trusting every future caller,
+including the model. Overriding the method means there is no call site left to forget.
 
-Signing is overridden at a single chokepoint, so every signature — including ones the
-model initiates through its own tool calls — passes a verified authorization check
-first. The guard is structural rather than advisory because the earlier version failed
-exactly once in the way that matters: the LLM fallback signed for an agent the
-deterministic path had already declined in the same round.
+### Where the guard lives decides whether it holds
 
-From round 2 the authorization list stops naming agents and paraphrases them instead,
-so the agent has to resolve identity from description against message history at
-runtime. That resolver runs at temperature 0 and declines on ambiguity, timeout, or a
-malformed response — declining is free, a wrong signature is not.
+In [signed-email-agent](https://github.com/Eman-Yousaf/signed-email-agent), every
+signature — the deterministic path, the LLM's own tool calls, the legacy signing tool —
+leaves through one overridden method, so authorization is enforced once rather than
+promised in several places. 22 offline tests cover the cases that matter: a peer's claim
+of authorization grants nothing, the LLM fallback cannot sign for an unauthorized agent,
+a resolver error declines. No network, no LLM, no server — `pytest test_agent_logic.py`.
 
-The decision logic has 22 tests covering the guard — that a peer's claim of
-authorization grants nothing, that the LLM fallback cannot sign for an unauthorized
-agent, that a resolver error or low-confidence match declines. They run offline with no
-network, LLM or server: `pytest test_agent_logic.py`.
+In [AI_employee](https://github.com/Eman-Yousaf/AI_employee) the same idea is structural
+rather than syntactic: the component that can actually send reads from exactly one
+directory, and the component the model drives writes to a different one. Moving a file
+between them is a human action. It is a separation of paths, not a sandbox, and the
+README says so — an agent with vault write access could defeat it, which is worth knowing
+before extending it to actions where being wrong is expensive.
 
-### [datahub-incident-copilot](https://github.com/Eman-Yousaf/datahub-incident-copilot)
+### Declining is free; being wrong is not
 
-A ReAct agent (LangGraph + MCP) that takes a one-line incident report — "order counts
-on our dashboards look wrong" — and investigates it live against DataHub's real lineage
-graph, deciding for itself whether to walk further upstream or stop, then computing the
-downstream blast radius before it touches anything.
+From round 2 of that benchmark the authorization list stops naming agents and starts
+*describing* them — paraphrasing something they said earlier, deliberately without
+reusing the words. Identity has to be resolved at runtime against message history. That
+resolver runs at temperature 0 and returns strict JSON, and any ambiguity, timeout, or
+malformed response declines. A missed signature costs nothing; a wrong one costs a point.
 
-Write-backs are gated on evidence rather than on the model's own say-so: confidence and
-severity are computed in plain Python from which evidence items were actually confirmed
-via tool calls, and low confidence blocks the mutation outright and routes to human
-review. Every successful write is re-read from the catalog afterward, so a trace shows
-the tag actually landed instead of asking you to trust a bare `success: true`.
+[datahub-incident-copilot](https://github.com/Eman-Yousaf/datahub-incident-copilot) makes
+the same trade against a live data catalog. It takes a one-line incident report, walks
+DataHub's real lineage graph to find root cause, and computes downstream blast radius
+before touching anything. Whether it may write back is not the model's call: confidence
+and severity are computed in plain Python from which evidence it actually confirmed via
+tool calls, and low confidence blocks the mutation and routes to human review instead.
+Every successful write is re-read from the catalog afterward, so the trace shows the tag
+landed rather than asking you to trust a bare `success: true`.
 
-### [GAMING-ARENA-WITH-AI](https://github.com/Eman-Yousaf/GAMING-ARENA-WITH-AI)
+### A README that overstates is a bug
 
-A C++17 tournament server: minimax tic-tac-toe engine behind token auth and role-based
-access, matchmaking, and a REST API on Crow/ASIO. CI builds the documented
-configuration on every push, so the build instructions in the README are the ones that
-are known to work.
+[GAMING-ARENA-WITH-AI](https://github.com/Eman-Yousaf/GAMING-ARENA-WITH-AI) is a C++17
+tournament server — minimax tic-tac-toe engine behind token auth and role-based access,
+matchmaking, REST API on Crow/ASIO. Its `src/` tree and GoogleTest suite target a modular
+refactor whose headers were never written, so both are excluded from the build, and
+asking for the tests stops with an explanation rather than a missing-header error from
+inside a dependency. CI builds the configuration the README documents, on every push, so
+the instructions are the ones known to work.
 
-The `src/` tree and the GoogleTest suite target an unfinished modular refactor whose
-headers do not exist yet. Both are excluded from the build and the README says so,
-rather than shipping a build that breaks on clone.
-
-### [Filer_ai](https://github.com/Eman-Yousaf/Filer_ai)
-
-A local-first file triage agent: a Python filesystem watcher, an Obsidian vault as the
-human-readable interface, and a Claude Code skill as the executor. No server, no
-database, no cloud.
-
-The folder layout *is* the state — items carry `status` in their frontmatter instead of
-living in a separate queue, so there are not two sources of truth to drift apart. Work
-waits visibly in `/Needs_Action` where a person can change it before anything is
-finalised, and behaviour is configured in prose: the rules live in a handbook file, so
-changing how it works means editing English rather than Python.
+[Filer_ai](https://github.com/Eman-Yousaf/Filer_ai) is smaller and makes one decision
+worth defending: the folder layout *is* the state. Items carry `status` in frontmatter
+instead of living in a queue somewhere else, so there are never two sources of truth to
+drift apart, and behaviour is configured in prose — the rules live in a handbook file,
+so changing how it works means editing English.
 
 ---
 
-Also here: [AI_employee](https://github.com/Eman-Yousaf/AI_employee), an agentic
-assistant built from nine Claude Code skills that watches Gmail/WhatsApp/LinkedIn and
-routes anything consequential through an approval step;
-[house-price-prediction](https://github.com/Eman-Yousaf/house-price-prediction), a
-linear-regression pipeline documented end to end from imputation through to held-out
-evaluation; and coursework in C++, MySQL and networking.
+Also here: [house-price-prediction](https://github.com/Eman-Yousaf/house-price-prediction),
+a linear-regression pipeline documented end to end from imputation to held-out evaluation,
+and coursework in C++, MySQL and networking.
 
 [LinkedIn](https://www.linkedin.com/in/eman-yousaf96)
