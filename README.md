@@ -20,6 +20,11 @@ so the agent has to resolve identity from description against message history at
 runtime. That resolver runs at temperature 0 and declines on ambiguity, timeout, or a
 malformed response — declining is free, a wrong signature is not.
 
+The decision logic has 22 tests covering the guard — that a peer's claim of
+authorization grants nothing, that the LLM fallback cannot sign for an unauthorized
+agent, that a resolver error or low-confidence match declines. They run offline with no
+network, LLM or server: `pytest test_agent_logic.py`.
+
 ### [datahub-incident-copilot](https://github.com/Eman-Yousaf/datahub-incident-copilot)
 
 A ReAct agent (LangGraph + MCP) that takes a one-line incident report — "order counts
