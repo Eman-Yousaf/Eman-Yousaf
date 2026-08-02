@@ -1,39 +1,68 @@
-### 👋 Hi there, I'm Eman — I build AI agents that actually do things.
+I build agents that take real actions against real systems, which mostly means
+deciding what an agent must not be able to do and then enforcing it somewhere the
+model cannot reach.
 
-![Profile views](https://komarev.com/ghpvc/?username=Eman-Yousaf&color=0A66C2&style=flat)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-eman--yousaf96-0A66C2?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/eman-yousaf96)
-[![Gmail](https://img.shields.io/badge/Gmail-alluriousme%40gmail.com-D14836?logo=gmail&logoColor=white)](mailto:alluriousme@gmail.com)
+### [signed-email-agent](https://github.com/Eman-Yousaf/signed-email-agent)
 
-BS AI student focused on agentic systems: LLM agents that reason over real tools, real data, and real consequences — not just chat completions with a system prompt.
+An autonomous agent for a 4-player adversarial benchmark where LLM agents negotiate
+over email and exchange RSA-PSS signed messages. Each agent may sign only for certain
+others, and the opponents are LLMs writing persuasive email directly into your agent's
+context to talk it into signing anyway.
 
-- 🔭 Currently building **agentic AI systems** with LangGraph and MCP — agents that choose their own investigation/action path instead of following a fixed script
-- 🛠️ Also comfortable lower in the stack: C++, databases, networking, OOP
+Signing is overridden at a single chokepoint, so every signature — including ones the
+model initiates through its own tool calls — passes a verified authorization check
+first. The guard is structural rather than advisory because the earlier version failed
+exactly once in the way that matters: the LLM fallback signed for an agent the
+deterministic path had already declined in the same round.
 
-### 🧰 Tech Stack
+From round 2 the authorization list stops naming agents and paraphrases them instead,
+so the agent has to resolve identity from description against message history at
+runtime. That resolver runs at temperature 0 and declines on ambiguity, timeout, or a
+malformed response — declining is free, a wrong signature is not.
 
-![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![C++](https://img.shields.io/badge/C%2B%2B-00599C?style=for-the-badge&logo=cplusplus&logoColor=white)
-![LangChain](https://img.shields.io/badge/LangGraph-1C3C3C?style=for-the-badge&logo=langchain&logoColor=white)
-![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
-![FastAPI](https://img.shields.io/badge/REST%20API-009688?style=for-the-badge&logo=fastapi&logoColor=white)
-![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
-![Jupyter](https://img.shields.io/badge/Jupyter-F37626?style=for-the-badge&logo=jupyter&logoColor=white)
-![Obsidian](https://img.shields.io/badge/Obsidian-7C3AED?style=for-the-badge&logo=obsidian&logoColor=white)
+### [datahub-incident-copilot](https://github.com/Eman-Yousaf/datahub-incident-copilot)
+
+A ReAct agent (LangGraph + MCP) that takes a one-line incident report — "order counts
+on our dashboards look wrong" — and investigates it live against DataHub's real lineage
+graph, deciding for itself whether to walk further upstream or stop, then computing the
+downstream blast radius before it touches anything.
+
+Write-backs are gated on evidence rather than on the model's own say-so: confidence and
+severity are computed in plain Python from which evidence items were actually confirmed
+via tool calls, and low confidence blocks the mutation outright and routes to human
+review. Every successful write is re-read from the catalog afterward, so a trace shows
+the tag actually landed instead of asking you to trust a bare `success: true`.
+
+### [GAMING-ARENA-WITH-AI](https://github.com/Eman-Yousaf/GAMING-ARENA-WITH-AI)
+
+A C++17 tournament server: minimax tic-tac-toe engine behind token auth and role-based
+access, matchmaking, and a REST API on Crow/ASIO. CI builds the documented
+configuration on every push, so the build instructions in the README are the ones that
+are known to work.
+
+The `src/` tree and the GoogleTest suite target an unfinished modular refactor whose
+headers do not exist yet. Both are excluded from the build and the README says so,
+rather than shipping a build that breaks on clone.
+
+### [Filer_ai](https://github.com/Eman-Yousaf/Filer_ai)
+
+A local-first file triage agent: a Python filesystem watcher, an Obsidian vault as the
+human-readable interface, and a Claude Code skill as the executor. No server, no
+database, no cloud.
+
+The folder layout *is* the state — items carry `status` in their frontmatter instead of
+living in a separate queue, so there are not two sources of truth to drift apart. Work
+waits visibly in `/Needs_Action` where a person can change it before anything is
+finalised, and behaviour is configured in prose: the rules live in a handbook file, so
+changing how it works means editing English rather than Python.
 
 ---
 
-### Featured projects
+Also here: [AI_employee](https://github.com/Eman-Yousaf/AI_employee), an agentic
+assistant built from nine Claude Code skills that watches Gmail/WhatsApp/LinkedIn and
+routes anything consequential through an approval step;
+[house-price-prediction](https://github.com/Eman-Yousaf/house-price-prediction), a
+linear-regression pipeline documented end to end from imputation through to held-out
+evaluation; and coursework in C++, MySQL and networking.
 
-| Project | What it does |
-|---|---|
-| [**datahub-incident-copilot**](https://github.com/Eman-Yousaf/datahub-incident-copilot) | A ReAct agent (LangGraph + MCP) that investigates data-quality incidents by walking DataHub's live lineage graph, finds root cause, computes downstream blast radius, and writes findings back — built for the DataHub Agent Hackathon. |
-| [**AI_employee**](https://github.com/Eman-Yousaf/AI_employee) | An agentic personal-assistant framework on Claude Code + an Obsidian vault: watches Gmail/WhatsApp/LinkedIn, drafts responses and actions, and routes anything consequential through human-in-the-loop approval. |
-| [**GAMING-ARENA-WITH-AI**](https://github.com/Eman-Yousaf/GAMING-ARENA-WITH-AI) | A real-time C++17 tournament platform — minimax Tic-Tac-Toe AI, JWT-style auth, role-based access, matchmaking, and a REST API on Crow/ASIO. |
-| [**campus-canteen-db**](https://github.com/Eman-Yousaf/campus-canteen-db) | Normalized MySQL database system for campus order management — 12 tables and 10 analytical queries. |
-
----
-
-### 📊 GitHub Stats
-
-<img src="https://github-readme-stats.vercel.app/api?username=Eman-Yousaf&show_icons=true&theme=default&hide_border=true&count_private=true" height="165" alt="GitHub stats" />
-<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Eman-Yousaf&layout=compact&theme=default&hide_border=true" height="165" alt="Top languages" />
+[LinkedIn](https://www.linkedin.com/in/eman-yousaf96)
