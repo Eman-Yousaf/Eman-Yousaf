@@ -66,6 +66,22 @@ instead of living in a queue somewhere else, so there are never two sources of t
 drift apart, and behaviour is configured in prose — the rules live in a handbook file,
 so changing how it works means editing English.
 
+### Knowing which minutes to spend is the part behind the paywall
+
+Free SAT content is already solved — Khan Academy gives away the lessons, College Board
+gives away the tests. What a $200/hour tutor actually sells is the judgement about which
+forty minutes to spend tonight. [aria-sat-coach](https://github.com/Eman-Yousaf/aria-sat-coach)
+prices that judgement: Bayesian knowledge tracing over 29 skills feeds a Monte Carlo
+simulation of the exam the student has not sat yet, every skill is costed in points per
+minute of study, and the session spends the minutes they actually have on the skills with
+the highest return. It will send a student to the skill that is *cheaper to move* rather
+than the one they are worst at — those are different answers, and only one of them is
+worth score. It runs on WhatsApp, on a shared phone, over 2G.
+
+The same machinery — hold a conversation over many turns, keep state about a real person,
+decide what to do next, then act — is what runs the booking and screening agents at
+[zayraa.tech](https://zayraa.tech).
+
 ---
 
 Also here: [house-price-prediction](https://github.com/Eman-Yousaf/house-price-prediction),
